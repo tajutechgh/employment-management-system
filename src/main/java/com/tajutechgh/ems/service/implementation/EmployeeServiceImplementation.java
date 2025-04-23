@@ -1,9 +1,11 @@
 package com.tajutechgh.ems.service.implementation;
 
 import com.tajutechgh.ems.dto.EmployeeDto;
+import com.tajutechgh.ems.entity.Department;
 import com.tajutechgh.ems.entity.Employee;
 import com.tajutechgh.ems.exception.ResourceNotFoundException;
 import com.tajutechgh.ems.mapper.EmployeeMapper;
+import com.tajutechgh.ems.repository.DepartmentRepository;
 import com.tajutechgh.ems.repository.EmployeeRepository;
 import com.tajutechgh.ems.service.EmployeeService;
 import org.springframework.stereotype.Service;
@@ -15,16 +17,25 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImplementation implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
+    private DepartmentRepository departmentRepository;
 
-    public EmployeeServiceImplementation(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImplementation(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository) {
 
         this.employeeRepository = employeeRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
 
         Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+
+        Department department = departmentRepository.findById(employeeDto.getDepartmentId()).orElseThrow(
+
+                () -> new ResourceNotFoundException("Department", "id", employeeDto.getDepartmentId())
+        );
+
+        employee.setDepartment(department);
 
         Employee savedEmployee = employeeRepository.save(employee);
 
@@ -64,6 +75,13 @@ public class EmployeeServiceImplementation implements EmployeeService {
         employee.setFirstName(updatedEmployee.getFirstName());
         employee.setLastName(updatedEmployee.getLastName());
         employee.setEmail(updatedEmployee.getEmail());
+
+        Department department = departmentRepository.findById(updatedEmployee.getDepartmentId()).orElseThrow(
+
+                () -> new ResourceNotFoundException("Department", "id", updatedEmployee.getDepartmentId())
+        );
+
+        employee.setDepartment(department);
 
         Employee savedEmployee = employeeRepository.save(employee);
 
