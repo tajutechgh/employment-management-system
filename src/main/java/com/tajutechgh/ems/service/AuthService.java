@@ -4,5 +4,5 @@ import com.tajutechgh.ems.dto.RegisterDto;
 
 public interface AuthService {
 
-    String register(RegisterDto registerDto);
+    String registerUser(RegisterDto registerDto);
 }
