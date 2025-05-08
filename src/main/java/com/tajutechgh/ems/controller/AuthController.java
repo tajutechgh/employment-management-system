@@ -1,5 +1,7 @@
 package com.tajutechgh.ems.controller;
 
+import com.tajutechgh.ems.dto.JwtAuthResponse;
+import com.tajutechgh.ems.dto.LoginDto;
 import com.tajutechgh.ems.dto.RegisterDto;
 import com.tajutechgh.ems.service.AuthService;
 import org.springframework.http.HttpStatus;
@@ -24,5 +26,14 @@ public class AuthController {
         String response = authService.registerUser(registerDto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // TODO: login user
+    @PostMapping("/login")
+    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
+
+        JwtAuthResponse jwtAuthResponse = authService.loginUser(loginDto);
+
+        return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
     }
 }
